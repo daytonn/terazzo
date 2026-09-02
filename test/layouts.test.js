@@ -2,7 +2,7 @@ import {test, assertEqual} from './harness.js';
 import {detectLayouts, matchNamedLayout, parseSequence, formatSequence, chooseSequenceSlot} from '../lib/layouts.js';
 import {validateRule, parseRules, serializeRules} from '../lib/rules.js';
 
-// The user's imported gTile presets, slot 1 first.
+// The default preset specs, slot 1 first.
 const SPECS = ['2x1 1:1 1:1', '2x1 2:1 2:1', '3x1 1:1 1:1', '3x1 2:1 2:1', '3x1 3:1 3:1',
     '4x1 1:1 1:1', '4x1 2:1 2:1', '4x1 3:1 3:1', '4x1 4:1 4:1', '8x1 3:1 6:1',
     '1x1 1:1 1:1', '6x1 1:1 4:1', '6x1 3:1 6:1'];

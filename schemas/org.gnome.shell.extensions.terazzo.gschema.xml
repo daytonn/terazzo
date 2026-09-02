@@ -6,7 +6,7 @@
       <summary>Grid spec for preset slot 1</summary>
     </key>
     <key name="preset-key-1" type="as">
-      <default>[]</default>
+      <default>['&lt;Control&gt;&lt;Alt&gt;1']</default>
       <summary>Keybinding for preset slot 1</summary>
     </key>
     <key name="preset-spec-2" type="s">
@@ -14,7 +14,7 @@
       <summary>Grid spec for preset slot 2</summary>
     </key>
     <key name="preset-key-2" type="as">
-      <default>[]</default>
+      <default>['&lt;Control&gt;&lt;Alt&gt;2']</default>
       <summary>Keybinding for preset slot 2</summary>
     </key>
     <key name="preset-spec-3" type="s">
@@ -22,7 +22,7 @@
       <summary>Grid spec for preset slot 3</summary>
     </key>
     <key name="preset-key-3" type="as">
-      <default>[]</default>
+      <default>['&lt;Control&gt;&lt;Alt&gt;3']</default>
       <summary>Keybinding for preset slot 3</summary>
     </key>
     <key name="preset-spec-4" type="s">
@@ -30,7 +30,7 @@
       <summary>Grid spec for preset slot 4</summary>
     </key>
     <key name="preset-key-4" type="as">
-      <default>[]</default>
+      <default>['&lt;Control&gt;&lt;Alt&gt;4']</default>
       <summary>Keybinding for preset slot 4</summary>
     </key>
     <key name="preset-spec-5" type="s">
@@ -38,7 +38,7 @@
       <summary>Grid spec for preset slot 5</summary>
     </key>
     <key name="preset-key-5" type="as">
-      <default>[]</default>
+      <default>['&lt;Control&gt;&lt;Alt&gt;5']</default>
       <summary>Keybinding for preset slot 5</summary>
     </key>
     <key name="preset-spec-6" type="s">
@@ -46,7 +46,7 @@
       <summary>Grid spec for preset slot 6</summary>
     </key>
     <key name="preset-key-6" type="as">
-      <default>[]</default>
+      <default>['&lt;Control&gt;&lt;Alt&gt;6']</default>
       <summary>Keybinding for preset slot 6</summary>
     </key>
     <key name="preset-spec-7" type="s">
@@ -54,7 +54,7 @@
       <summary>Grid spec for preset slot 7</summary>
     </key>
     <key name="preset-key-7" type="as">
-      <default>[]</default>
+      <default>['&lt;Control&gt;&lt;Alt&gt;7']</default>
       <summary>Keybinding for preset slot 7</summary>
     </key>
     <key name="preset-spec-8" type="s">
@@ -62,7 +62,7 @@
       <summary>Grid spec for preset slot 8</summary>
     </key>
     <key name="preset-key-8" type="as">
-      <default>[]</default>
+      <default>['&lt;Control&gt;&lt;Alt&gt;8']</default>
       <summary>Keybinding for preset slot 8</summary>
     </key>
     <key name="preset-spec-9" type="s">
@@ -70,7 +70,7 @@
       <summary>Grid spec for preset slot 9</summary>
     </key>
     <key name="preset-key-9" type="as">
-      <default>[]</default>
+      <default>['&lt;Control&gt;&lt;Alt&gt;9']</default>
       <summary>Keybinding for preset slot 9</summary>
     </key>
     <key name="preset-spec-10" type="s">
@@ -78,7 +78,7 @@
       <summary>Grid spec for preset slot 10</summary>
     </key>
     <key name="preset-key-10" type="as">
-      <default>[]</default>
+      <default>['&lt;Control&gt;&lt;Alt&gt;0']</default>
       <summary>Keybinding for preset slot 10</summary>
     </key>
     <key name="preset-spec-11" type="s">
@@ -86,7 +86,7 @@
       <summary>Grid spec for preset slot 11</summary>
     </key>
     <key name="preset-key-11" type="as">
-      <default>[]</default>
+      <default>['&lt;Super&gt;&lt;Control&gt;KP_1','&lt;Control&gt;&lt;Alt&gt;&lt;Super&gt;0']</default>
       <summary>Keybinding for preset slot 11</summary>
     </key>
     <key name="preset-spec-12" type="s">
@@ -94,7 +94,7 @@
       <summary>Grid spec for preset slot 12</summary>
     </key>
     <key name="preset-key-12" type="as">
-      <default>[]</default>
+      <default>['&lt;Super&gt;&lt;Control&gt;KP_2','&lt;Control&gt;&lt;Alt&gt;&lt;Super&gt;1']</default>
       <summary>Keybinding for preset slot 12</summary>
     </key>
     <key name="preset-spec-13" type="s">
@@ -102,7 +102,7 @@
       <summary>Grid spec for preset slot 13</summary>
     </key>
     <key name="preset-key-13" type="as">
-      <default>[]</default>
+      <default>['&lt;Super&gt;&lt;Control&gt;KP_3','&lt;Control&gt;&lt;Alt&gt;&lt;Super&gt;2']</default>
       <summary>Keybinding for preset slot 13</summary>
     </key>
     <key name="reset-layout-key" type="as">
@@ -117,10 +117,6 @@
       <default>4</default>
       <range min="0" max="13"/>
       <summary>Preset slot applied to windows with no rule; 0 disables</summary>
-    </key>
-    <key name="gtile-imported" type="b">
-      <default>false</default>
-      <summary>Whether gTile presets were imported once</summary>
     </key>
   </schema>
 </schemalist>

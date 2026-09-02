@@ -1,5 +1,5 @@
 import {test, assertEqual, assertThrows} from './harness.js';
-import {parseGridSpec, tryParseGridSpec, formatGridSpec, firstVariant, GridSpecError} from '../lib/gridspec.js';
+import {parseGridSpec, tryParseGridSpec, formatGridSpec, GridSpecError} from '../lib/gridspec.js';
 
 test('parses a left-third spec', () => {
     assertEqual(parseGridSpec('3x1 1:1 1:1'), {cols: 3, rows: 1, x1: 1, y1: 1, x2: 1, y2: 1});
@@ -40,7 +40,3 @@ test('format round-trips', () => {
         assertEqual(formatGridSpec(parseGridSpec(s)), s);
 });
 
-test('firstVariant strips gTile cycling variants', () => {
-    assertEqual(firstVariant('3x1 1:1 1:1, 3x1 1:1 2:1'), '3x1 1:1 1:1');
-    assertEqual(firstVariant(undefined), '');
-});

@@ -13,7 +13,6 @@ import Gtk from 'gi://Gtk';
 import {PRESET_SLOTS, tryParseGridSpec} from '../lib/gridspec.js';
 import {parseRules, serializeRules} from '../lib/rules.js';
 import {NAMED_LAYOUTS, detectLayouts, matchNamedLayout, parseSequence, formatSequence} from '../lib/layouts.js';
-import {importFromGtile, isGtileEnabled} from '../lib/gtileImport.js';
 import {ShortcutButton} from './shortcutRow.js';
 import {AppChooserDialog} from './appChooser.js';
 import {PresetPreview} from './presetPreview.js';
@@ -64,7 +63,7 @@ export function buildPresetsPage(settings) {
     const page = new Adw.PreferencesPage({title: 'Presets', icon_name: 'view-grid-symbolic'});
     const group = new Adw.PreferencesGroup({
         title: 'Preset slots',
-        description: 'Grid specs use gTile syntax: COLSxROWS c1:r1 c2:r2, cells 1-based. Example: 3x1 2:1 2:1 is the middle third.',
+        description: 'Grid specs read COLSxROWS c1:r1 c2:r2, cells 1-based. Example: 3x1 2:1 2:1 is the middle third.',
     });
     page.add(group);
 
@@ -309,40 +308,6 @@ export function buildGeneralPage(settings, window) {
     const reset = new Adw.ActionRow({title: 'Reset layout', subtitle: 'Re-apply every rule to the windows that are open now'});
     reset.add_suffix(new ShortcutButton(settings, 'reset-layout-key'));
     behaviour.add(reset);
-
-    const gtile = new Adw.PreferencesGroup({title: 'gTile'});
-    page.add(gtile);
-    const importRow = new Adw.ActionRow({
-        title: 'Import presets from gTile',
-        subtitle: 'Copies grid specs and shortcuts for slots 1 to 13',
-    });
-    const importButton = new Gtk.Button({label: 'Import', valign: Gtk.Align.CENTER});
-    importRow.add_suffix(importButton);
-    gtile.add(importRow);
-
-    const toast = title => window.add_toast(new Adw.Toast({title}));
-    const runImport = () => {
-        const r = importFromGtile(settings);
-        toast(r.found ? `Imported ${r.specs} presets and ${r.keys} shortcuts` : 'gTile is not installed');
-    };
-    importButton.connect('clicked', () => {
-        if (!isGtileEnabled()) {
-            runImport();
-            return;
-        }
-        const dialog = new Adw.AlertDialog({
-            heading: 'gTile is still enabled',
-            body: 'Importing now binds the same shortcuts in both extensions. Disable gTile first, or continue anyway.',
-        });
-        dialog.add_response('cancel', 'Cancel');
-        dialog.add_response('import', 'Import anyway');
-        dialog.set_response_appearance('import', Adw.ResponseAppearance.DESTRUCTIVE);
-        dialog.connect('response', (_d, id) => {
-            if (id === 'import')
-                runImport();
-        });
-        dialog.present(window);
-    });
 
     return page;
 }

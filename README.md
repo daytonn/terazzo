@@ -3,9 +3,9 @@
 A GNOME Shell extension for people who like their windows tiled a particular
 way but do not want a tiling window manager deciding for them.
 
-- **Preset hotkeys.** Thirteen slots, each a grid spec in gTile syntax
-  (`3x1 2:1 2:1` is the middle third) with its own shortcut. Press it and the
-  focused window snaps to that region of the monitor under the mouse.
+- **Preset hotkeys.** Thirteen slots, each a grid spec (`3x1 2:1 2:1` is the
+  middle third) with its own shortcut. Press it and the focused window snaps to
+  that region of the monitor under the mouse.
 - **Placement rules.** Map an application to a workspace and a preset. Every new
   window of that app is moved there automatically. Windows with no rule land in
   a fallback preset (middle third by default).
@@ -15,10 +15,14 @@ way but do not want a tiling window manager deciding for them.
   presets, or give any custom order of slots.
 - **Reset layout.** One shortcut re-applies every rule to the windows that are
   open now.
-- **gTile import.** Your existing gTile presets and shortcuts for slots 1 to 13
-  are copied over once gTile is disabled.
 
 Design notes live in `docs/plans/`.
+
+The thirteen presets ship as schema defaults — halves, thirds, quarters, a
+centred half, left and right two-thirds, and full screen — each bound to
+<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> through <kbd>0</kbd>, with the last
+three on the numeric keypad. A fresh install is usable immediately; edit any
+preset or shortcut on the Presets page. Reset layout is unbound by default.
 
 ## Requirements
 
@@ -66,15 +70,6 @@ apply live, and disabling and re-enabling the extension needs no re-login.
 > working tree. `make install` and `make link` remove the symlink as a link
 > first, so use those rather than calling the tool by hand.
 
-## Switching from gTile
-
-1. Keep gTile enabled at first. Terazzo's shortcuts are empty by default, so
-   nothing collides, and you can test rules while gTile still handles hotkeys.
-2. When placement behaves, disable gTile:
-   `gnome-extensions disable gTile@vibou`
-3. Either re-enable Terazzo or press **Import** on the General page. Your
-   thirteen presets and their shortcuts are now Terazzo's.
-
 ## Development
 
 ```sh
@@ -88,7 +83,7 @@ journalctl -f -o cat /usr/bin/gnome-shell   # shell-side logs, prefixed [terazzo
 Layout:
 
 ```
-extension.js        shell entry point: keybindings, engine wiring, gTile import
+extension.js        shell entry point: keybindings and engine wiring
 prefs.js            preferences entry point
 lib/gridspec.js     grid spec parser (pure)
 lib/geometry.js     spec + work area -> rectangle (pure)
@@ -96,12 +91,11 @@ lib/rules.js        rule parsing, lookup, serialization (pure)
 lib/placer.js       the only module that moves windows
 lib/presets.js      cached parsed presets from settings
 lib/rulesEngine.js  window-created handling, first-frame placement, reset layout
-lib/gtileImport.js  loads gTile's schema from its own directory and copies slots 1..13
+lib/layouts.js      named layout detection and slot sequencing (pure)
 prefs/pages.js      the three preference pages
 prefs/shortcutRow.js  hand-built shortcut capture button
 prefs/appChooser.js   searchable installed-app picker
 prefs/presetPreview.js  small drawing of a grid spec
-lib/layouts.js      named layout detection and slot sequencing (pure)
 schemas/            GSettings schema (compile with make schemas)
 test/               gjs test harness and tests
 packaging/PKGBUILD  Arch package built from a tagged release

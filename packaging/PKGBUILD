@@ -2,7 +2,7 @@
 pkgname=gnome-shell-extension-terazzo
 pkgver=0.1.0
 pkgrel=1
-pkgdesc="GNOME Shell extension: per-app window placement with gTile-style preset hotkeys"
+pkgdesc="GNOME Shell extension: per-app window placement with grid preset hotkeys"
 arch=('any')
 url="https://github.com/daytonn/terazzo"
 license=('GPL-2.0-or-later')

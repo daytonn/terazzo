@@ -7,7 +7,6 @@ import Gtk from 'gi://Gtk?version=4.0';
 import System from 'system';
 
 import {buildPresetsPage, buildRulesPage, buildGeneralPage} from '../prefs/pages.js';
-import {findGtileSettings} from '../lib/gtileImport.js';
 
 Adw.init();
 
@@ -36,6 +35,4 @@ settings.set_string('preset-spec-1', '2x1 1:1 1:1');
 settings.set_int('fallback-preset', 0);
 print('settings churn survived');
 
-const gtile = findGtileSettings();
-print(gtile ? `gTile found: resize4=${gtile.get_string('resize4')} key=${gtile.get_strv('preset-resize-4')}` : 'gTile not found');
 print('smoke ok');

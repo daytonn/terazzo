@@ -11,7 +11,6 @@ import {PRESET_SLOTS} from './lib/gridspec.js';
 import {PresetStore} from './lib/presets.js';
 import {RulesEngine} from './lib/rulesEngine.js';
 import {placeWindow} from './lib/placer.js';
-import {importFromGtile, isGtileEnabled} from './lib/gtileImport.js';
 
 export default class TerazzoExtension extends Extension {
     enable() {
@@ -20,7 +19,6 @@ export default class TerazzoExtension extends Extension {
         this._engine = new RulesEngine(this._settings, this._presets);
         this._engine.enable();
         this._bindKeys();
-        this._maybeImportFromGtile();
     }
 
     disable() {
@@ -55,15 +53,4 @@ export default class TerazzoExtension extends Extension {
         placeWindow(win, spec, global.display.get_current_monitor());
     }
 
-    _maybeImportFromGtile() {
-        if (this._settings.get_boolean('gtile-imported'))
-            return;
-        if (isGtileEnabled()) {
-            console.log('[terazzo] gTile is still enabled; skipping preset import so hotkeys do not collide');
-            return;
-        }
-        const result = importFromGtile(this._settings);
-        if (result.found)
-            console.log(`[terazzo] imported ${result.specs} preset specs and ${result.keys} keybindings from gTile`);
-    }
 }
