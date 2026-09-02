@@ -9,10 +9,10 @@ import Gtk from 'gi://Gtk';
 
 export const PresetPreview = GObject.registerClass(
 class PresetPreview extends Gtk.DrawingArea {
-    _init(spec = null) {
+    _init(spec = null, {width = 56, height = 16} = {}) {
         super._init({
-            content_width: 56,
-            content_height: 16,
+            content_width: width,
+            content_height: height,
             valign: Gtk.Align.CENTER,
             margin_end: 6,
         });

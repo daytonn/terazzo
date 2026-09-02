@@ -1,6 +1,7 @@
 import {test, assertEqual} from './harness.js';
-import {detectLayouts, matchNamedLayout, parseSequence, formatSequence, chooseSequenceSlot} from '../lib/layouts.js';
+import {detectLayouts, matchNamedLayout, parseSequence, formatSequence, chooseSequenceSlot, describeSpec} from '../lib/layouts.js';
 import {validateRule, parseRules, serializeRules} from '../lib/rules.js';
+import {parseGridSpec} from '../lib/gridspec.js';
 
 // The default preset specs, slot 1 first.
 const SPECS = ['2x1 1:1 1:1', '2x1 2:1 2:1', '3x1 1:1 1:1', '3x1 2:1 2:1', '3x1 3:1 3:1',
@@ -90,4 +91,22 @@ test('rules accept a presets sequence and derive preset from it', () => {
 test('sequence round-trips through JSON', () => {
     const rules = [{app: 'a.desktop', workspace: 2, preset: 6, enabled: true, presets: [6, 7, 8, 9]}];
     assertEqual(parseRules(serializeRules(rules)).rules, rules);
+});
+
+test('every default preset gets a readable name', () => {
+    const names = SPECS.map(text => describeSpec(parseGridSpec(text)));
+    assertEqual(names, [
+        'Left half', 'Right half',
+        'Left third', 'Middle third', 'Right third',
+        'First quarter', 'Second quarter', 'Third quarter', 'Fourth quarter',
+        'Centred half',
+        'Full screen',
+        'Left two-thirds', 'Right two-thirds',
+    ]);
+});
+
+test('unnameable grids fall back to the spec', () => {
+    assertEqual(describeSpec(parseGridSpec('5x1 2:1 3:1')), '5x1 2:1 3:1');
+    assertEqual(describeSpec(parseGridSpec('2x2 1:1 1:1')), '2x2 1:1 1:1');
+    assertEqual(describeSpec(null), 'Empty');
 });

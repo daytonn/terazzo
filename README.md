@@ -76,6 +76,7 @@ apply live, and disabling and re-enabling the extension needs no re-login.
 make test     # unit tests for the pure modules (gridspec, geometry, rules, layouts) under gjs
 make smoke    # builds every prefs page against an in-memory settings backend
 make check    # syntax check of all modules with node
+make preview  # opens the preferences window standalone (needs a display)
 make pack     # build a distributable bundle in dist/
 journalctl -f -o cat /usr/bin/gnome-shell   # shell-side logs, prefixed [terazzo]
 ```
@@ -95,7 +96,8 @@ lib/layouts.js      named layout detection and slot sequencing (pure)
 prefs/pages.js      the three preference pages
 prefs/shortcutRow.js  hand-built shortcut capture button
 prefs/appChooser.js   searchable installed-app picker
-prefs/presetPreview.js  small drawing of a grid spec
+prefs/presetPreview.js  small drawing of a grid spec, used as the visual cue
+                        in the preset and rule choosers
 schemas/            GSettings schema (compile with make schemas)
 test/               gjs test harness and tests
 packaging/PKGBUILD  Arch package built from a tagged release

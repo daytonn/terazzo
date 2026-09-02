@@ -3,7 +3,7 @@ SCHEMA := schemas/org.gnome.shell.extensions.terazzo.gschema.xml
 EXT_DIR := $(HOME)/.local/share/gnome-shell/extensions/$(UUID)
 BUNDLE := dist/$(UUID).shell-extension.zip
 
-.PHONY: schemas test smoke check pack link install uninstall
+.PHONY: schemas test smoke preview check pack link install uninstall
 
 schemas:
 	glib-compile-schemas schemas/
@@ -13,6 +13,10 @@ test: schemas
 
 smoke: schemas
 	GSETTINGS_BACKEND=memory gjs -m test/prefs-smoke.js
+
+# Opens the preferences window standalone; needs a display.
+preview: schemas
+	GSETTINGS_BACKEND=memory gjs -m test/prefs-preview.js
 
 check:
 	@for f in extension.js prefs.js lib/*.js prefs/*.js; do cp $$f /tmp/terazzo-check.mjs && node --check /tmp/terazzo-check.mjs || { echo "syntax error in $$f"; exit 1; }; done

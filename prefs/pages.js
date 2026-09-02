@@ -8,20 +8,24 @@
 import Adw from 'gi://Adw';
 import Gio from 'gi://Gio';
 import GioUnix from 'gi://GioUnix';
+import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
 
 import {PRESET_SLOTS, tryParseGridSpec} from '../lib/gridspec.js';
 import {parseRules, serializeRules} from '../lib/rules.js';
-import {NAMED_LAYOUTS, detectLayouts, matchNamedLayout, parseSequence, formatSequence} from '../lib/layouts.js';
+import {NAMED_LAYOUTS, describeSpec, detectLayouts, matchNamedLayout, parseSequence, formatSequence} from '../lib/layouts.js';
 import {ShortcutButton} from './shortcutRow.js';
 import {AppChooserDialog} from './appChooser.js';
 import {PresetPreview} from './presetPreview.js';
 
 const MAX_WORKSPACES = 36;
 
+function presetSpec(settings, slot) {
+    return tryParseGridSpec(settings.get_string(`preset-spec-${slot}`));
+}
+
 function presetLabel(settings, slot) {
-    const spec = settings.get_string(`preset-spec-${slot}`).trim();
-    return `${slot}: ${spec || '(empty)'}`;
+    return describeSpec(presetSpec(settings, slot));
 }
 
 function specTexts(settings) {
@@ -42,11 +46,45 @@ function layoutDescription(settings, rule) {
     return `${name} (${formatSequence(rule.presets)})`;
 }
 
+const PresetItem = GObject.registerClass({
+    Properties: {
+        slot: GObject.ParamSpec.int('slot', 'slot', 'Preset slot, 0 for none',
+            GObject.ParamFlags.READWRITE, 0, PRESET_SLOTS, 0),
+        label: GObject.ParamSpec.string('label', 'label', 'Display name',
+            GObject.ParamFlags.READWRITE, ''),
+    },
+}, class PresetItem extends GObject.Object {});
+
 function presetModel(settings, {includeNone = false} = {}) {
-    const items = includeNone ? ['None'] : [];
+    const store = Gio.ListStore.new(PresetItem.$gtype);
+    if (includeNone)
+        store.append(new PresetItem({slot: 0, label: 'None'}));
     for (let slot = 1; slot <= PRESET_SLOTS; slot++)
-        items.push(presetLabel(settings, slot));
-    return Gtk.StringList.new(items);
+        store.append(new PresetItem({slot, label: presetLabel(settings, slot)}));
+    return store;
+}
+
+// Draws each choice as its grid, so a layout is picked by sight rather than by
+// reading coordinates. Used for the selected row and the drop-down alike.
+function presetFactory(settings) {
+    const factory = new Gtk.SignalListItemFactory();
+    factory.connect('setup', (_factory, item) => {
+        const box = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL, spacing: 12});
+        box._preview = new PresetPreview(null, {width: 64, height: 20});
+        box._label = new Gtk.Label({xalign: 0});
+        box.append(box._preview);
+        box.append(box._label);
+        item.set_child(box);
+    });
+    factory.connect('bind', (_factory, item) => {
+        const {slot, label} = item.get_item();
+        const box = item.get_child();
+        box._label.label = label;
+        box._preview.visible = slot > 0;
+        if (slot > 0)
+            box._preview.setSpec(presetSpec(settings, slot));
+    });
+    return factory;
 }
 
 function appDisplay(appId) {
@@ -69,8 +107,8 @@ export function buildPresetsPage(settings) {
 
     for (let slot = 1; slot <= PRESET_SLOTS; slot++) {
         const key = `preset-spec-${slot}`;
-        const row = new Adw.ActionRow({title: `Preset ${slot}`});
-        const preview = new PresetPreview(tryParseGridSpec(settings.get_string(key)));
+        const row = new Adw.ActionRow({title: `Preset ${slot}`, subtitle: presetLabel(settings, slot)});
+        const preview = new PresetPreview(presetSpec(settings, slot));
         row.add_prefix(preview);
 
         const entry = new Gtk.Entry({
@@ -96,6 +134,7 @@ export function buildPresetsPage(settings) {
             if (entry.text !== text)
                 entry.text = text;
             preview.setSpec(tryParseGridSpec(text));
+            row.subtitle = presetLabel(settings, slot);
         });
         row.add_suffix(entry);
         row.add_suffix(new ShortcutButton(settings, `preset-key-${slot}`));
@@ -124,10 +163,8 @@ export function buildRulesPage(settings, window) {
     const write = () => {
         lastWritten = serializeRules(rules);
         settings.set_string('rules', lastWritten);
-        for (const {row, rule} of rows) {
-            if (rule)
-                row.subtitle = ruleSubtitle(settings, rule);
-        }
+        for (const {refresh} of rows)
+            refresh();
     };
 
     const ruleSubtitle = (s, rule) =>
@@ -140,13 +177,13 @@ export function buildRulesPage(settings, window) {
         if (rules.length === 0) {
             const empty = new Adw.ActionRow({title: 'No rules yet', subtitle: 'Click + to pick an application.'});
             group.add(empty);
-            rows.push({row: empty, rule: null});
+            rows.push({row: empty, refresh: () => {}});
             return;
         }
         for (const rule of rules) {
-            const row = buildRuleRow(rule);
+            const {row, refresh} = buildRuleRow(rule);
             group.add(row);
-            rows.push({row, rule});
+            rows.push({row, refresh});
         }
     };
 
@@ -154,6 +191,13 @@ export function buildRulesPage(settings, window) {
         const {name, icon} = appDisplay(rule.app);
         const row = new Adw.ExpanderRow({title: name, subtitle: ruleSubtitle(settings, rule)});
         row.add_prefix(new Gtk.Image({gicon: icon, pixel_size: 24}));
+
+        const rowPreview = new PresetPreview(presetSpec(settings, rule.preset));
+        row.add_suffix(rowPreview);
+        const refresh = () => {
+            row.subtitle = ruleSubtitle(settings, rule);
+            rowPreview.setSpec(presetSpec(settings, rule.preset));
+        };
 
         const toggle = new Gtk.Switch({active: rule.enabled, valign: Gtk.Align.CENTER});
         toggle.connect('notify::active', () => {
@@ -179,7 +223,12 @@ export function buildRulesPage(settings, window) {
 
         const layouts = detectLayouts(specTexts(settings));
         const layoutRow = new Adw.ComboRow({title: 'Layout', model: Gtk.StringList.new(LAYOUT_ITEMS)});
-        const presetRow = new Adw.ComboRow({title: 'Preset', model: presetModel(settings), selected: rule.preset - 1});
+        const presetRow = new Adw.ComboRow({
+            title: 'Preset',
+            model: presetModel(settings),
+            factory: presetFactory(settings),
+            selected: rule.preset - 1,
+        });
         const sequenceRow = new Adw.EntryRow({title: 'Preset order', text: rule.presets ? formatSequence(rule.presets) : ''});
 
         const initialLayout = () => {
@@ -256,7 +305,7 @@ export function buildRulesPage(settings, window) {
         });
         removeRow.add_suffix(removeButton);
         row.add_row(removeRow);
-        return row;
+        return {row, refresh};
     };
 
     const load = () => {
@@ -297,6 +346,7 @@ export function buildGeneralPage(settings, window) {
         title: 'Fallback preset',
         subtitle: 'Applied to new windows that have no rule',
         model: presetModel(settings, {includeNone: true}),
+        factory: presetFactory(settings),
         selected: settings.get_int('fallback-preset'),
     });
     fallback.connect('notify::selected', () => settings.set_int('fallback-preset', fallback.selected));
