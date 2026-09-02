@@ -25,7 +25,11 @@ window.add(buildRulesPage(settings, window));
 window.add(buildGeneralPage(settings, window));
 print('pages built');
 
-settings.set_string('rules', JSON.stringify([{app: 'firefox.desktop', workspace: 1, preset: 3}]));
+settings.set_string('rules', JSON.stringify([
+    {app: 'firefox.desktop', workspace: 1, preset: 3},
+    {app: 'org.gnome.Nautilus.desktop', presets: [6, 7, 8, 9]},
+    {app: 'org.gnome.Ptyxis.desktop', presets: [9, 6]},
+]));
 settings.set_string('rules', '{broken');
 settings.set_string('preset-spec-1', 'garbage');
 settings.set_string('preset-spec-1', '2x1 1:1 1:1');

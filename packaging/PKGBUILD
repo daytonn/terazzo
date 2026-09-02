@@ -1,0 +1,27 @@
+# Maintainer: Dayton Nolan <me@daytonnolan.com>
+pkgname=gnome-shell-extension-terazzo
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="GNOME Shell extension: per-app window placement with gTile-style preset hotkeys"
+arch=('any')
+url="https://github.com/daytonn/terazzo"
+license=('GPL-2.0-or-later')
+depends=('gnome-shell')
+makedepends=('git' 'glib2')
+source=("$pkgname-$pkgver::git+https://github.com/daytonn/terazzo.git#tag=v$pkgver")
+sha256sums=('SKIP')
+
+package() {
+  local uuid="terazzo@daytonnolan.com"
+  local dest="$pkgdir/usr/share/gnome-shell/extensions/$uuid"
+  cd "$srcdir/$pkgname-$pkgver"
+
+  install -Dm644 metadata.json extension.js prefs.js -t "$dest"
+  install -Dm644 lib/*.js -t "$dest/lib"
+  install -Dm644 prefs/*.js -t "$dest/prefs"
+  install -Dm644 schemas/*.gschema.xml -t "$dest/schemas"
+
+  # Self-contained: the shell reads the schema from the extension directory,
+  # so no glib-compile-schemas pacman hook is needed.
+  glib-compile-schemas "$dest/schemas"
+}

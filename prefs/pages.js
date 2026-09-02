@@ -8,6 +8,7 @@ import Gtk from 'gi://Gtk';
 
 import {PRESET_SLOTS, tryParseGridSpec} from '../lib/gridspec.js';
 import {parseRules, serializeRules} from '../lib/rules.js';
+import {NAMED_LAYOUTS, detectLayouts, matchNamedLayout, parseSequence, formatSequence} from '../lib/layouts.js';
 import {importFromGtile, isGtileEnabled} from '../lib/gtileImport.js';
 import {ShortcutButton} from './shortcutRow.js';
 import {AppChooserDialog} from './appChooser.js';
@@ -18,6 +19,24 @@ const MAX_WORKSPACES = 36;
 function presetLabel(settings, slot) {
     const spec = settings.get_string(`preset-spec-${slot}`).trim();
     return `${slot}: ${spec || '(empty)'}`;
+}
+
+function specTexts(settings) {
+    const texts = [];
+    for (let slot = 1; slot <= PRESET_SLOTS; slot++)
+        texts.push(settings.get_string(`preset-spec-${slot}`));
+    return texts;
+}
+
+const LAYOUT_ITEMS = ['Single preset', ...NAMED_LAYOUTS.map(l => l.name), 'Custom sequence'];
+const CUSTOM_INDEX = LAYOUT_ITEMS.length - 1;
+
+function layoutDescription(settings, rule) {
+    if (!rule.presets)
+        return presetLabel(settings, rule.preset);
+    const named = matchNamedLayout(rule.presets, detectLayouts(specTexts(settings)));
+    const name = named ? NAMED_LAYOUTS.find(l => l.id === named).name : 'Sequence';
+    return `${name} (${formatSequence(rule.presets)})`;
 }
 
 function presetModel(settings, {includeNone = false} = {}) {
@@ -109,7 +128,7 @@ export function buildRulesPage(settings, window) {
     };
 
     const ruleSubtitle = (s, rule) =>
-        `${rule.workspace ? `Workspace ${rule.workspace}` : 'Current workspace'} · ${presetLabel(s, rule.preset)}`;
+        `${rule.workspace ? `Workspace ${rule.workspace}` : 'Current workspace'} · ${layoutDescription(s, rule)}`;
 
     const rebuild = () => {
         for (const {row} of rows)
@@ -155,12 +174,75 @@ export function buildRulesPage(settings, window) {
         });
         row.add_row(wsRow);
 
+        const layouts = detectLayouts(specTexts(settings));
+        const layoutRow = new Adw.ComboRow({title: 'Layout', model: Gtk.StringList.new(LAYOUT_ITEMS)});
         const presetRow = new Adw.ComboRow({title: 'Preset', model: presetModel(settings), selected: rule.preset - 1});
+        const sequenceRow = new Adw.EntryRow({title: 'Preset order', text: rule.presets ? formatSequence(rule.presets) : ''});
+
+        const initialLayout = () => {
+            if (!rule.presets)
+                return 0;
+            const named = matchNamedLayout(rule.presets, layouts);
+            return named ? 1 + NAMED_LAYOUTS.findIndex(l => l.id === named) : CUSTOM_INDEX;
+        };
+        const syncLayoutRows = () => {
+            const idx = layoutRow.selected;
+            presetRow.visible = idx === 0;
+            sequenceRow.visible = idx === CUSTOM_INDEX;
+            const named = NAMED_LAYOUTS[idx - 1];
+            if (named) {
+                const slots = layouts[named.id];
+                layoutRow.subtitle = slots.length
+                    ? `Windows open in presets ${formatSequence(slots)}, left to right`
+                    : `No single-cell ${named.cols}-column presets found; define them on the Presets page`;
+            } else {
+                layoutRow.subtitle = idx === 0 ? 'Every new window takes the same preset' : 'Comma-separated preset numbers, e.g. 6, 7, 8, 9';
+            }
+        };
+        layoutRow.selected = initialLayout();
+        syncLayoutRows();
+
+        layoutRow.connect('notify::selected', () => {
+            const idx = layoutRow.selected;
+            syncLayoutRows();
+            if (idx === 0) {
+                delete rule.presets;
+            } else if (idx === CUSTOM_INDEX) {
+                const seq = parseSequence(sequenceRow.text);
+                if (!seq)
+                    return; // written once the entry holds a valid sequence
+                rule.presets = seq;
+            } else {
+                const slots = layouts[NAMED_LAYOUTS[idx - 1].id];
+                if (!slots.length)
+                    return;
+                rule.presets = slots;
+                sequenceRow.text = formatSequence(slots);
+            }
+            if (rule.presets)
+                rule.preset = rule.presets[0];
+            write();
+        });
         presetRow.connect('notify::selected', () => {
             rule.preset = presetRow.selected + 1;
             write();
         });
+        sequenceRow.connect('changed', () => {
+            const seq = parseSequence(sequenceRow.text);
+            if (!seq) {
+                sequenceRow.add_css_class('error');
+                return;
+            }
+            sequenceRow.remove_css_class('error');
+            if (layoutRow.selected === CUSTOM_INDEX) {
+                rule.presets = seq;
+                rule.preset = seq[0];
+                write();
+            }
+        });
+        row.add_row(layoutRow);
         row.add_row(presetRow);
+        row.add_row(sequenceRow);
 
         const removeRow = new Adw.ActionRow({title: 'Remove rule'});
         const removeButton = new Gtk.Button({icon_name: 'user-trash-symbolic', css_classes: ['destructive-action', 'flat'], valign: Gtk.Align.CENTER});

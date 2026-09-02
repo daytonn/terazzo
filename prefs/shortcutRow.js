@@ -6,6 +6,20 @@ import Gdk from 'gi://Gdk';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
 
+/**
+ * Shift+0 arrives as keyval "parenright" with Shift in the state. Mutter matches
+ * bindings by keycode, so it needs "<Shift>0": translate the keycode with Shift
+ * and Lock removed to get the level-0 keyval, as GNOME's keyboard settings do.
+ */
+function unshiftedKeyval(controller, keyval, keycode, state) {
+    const display = Gdk.Display.get_default();
+    if (!display)
+        return keyval;
+    const stripped = state & ~(Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.LOCK_MASK);
+    const [ok, base] = display.translate_key(keycode, stripped, controller.get_group());
+    return ok && base ? base : keyval;
+}
+
 export const ShortcutButton = GObject.registerClass(
 class ShortcutButton extends Gtk.Button {
     _init(settings, key) {
@@ -48,9 +62,10 @@ class ShortcutButton extends Gtk.Button {
                 dialog.close();
                 return Gdk.EVENT_STOP;
             }
-            if (!Gtk.accelerator_valid(keyval, mask))
+            const base = unshiftedKeyval(controller, keyval, keycode, state);
+            if (!Gtk.accelerator_valid(base, mask))
                 return Gdk.EVENT_STOP; // a lone modifier or an unbindable key
-            const accel = Gtk.accelerator_name_with_keycode(null, keyval, keycode, mask);
+            const accel = Gtk.accelerator_name(base, mask);
             this._settings.set_strv(this._key, [accel]);
             dialog.close();
             return Gdk.EVENT_STOP;
