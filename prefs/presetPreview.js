@@ -1,3 +1,7 @@
+// Generated with AI for personal use.
+// Do NOT upload to extensions.gnome.org (EGO) unless you understand JavaScript
+// and can maintain this code.
+
 // Small drawing of a grid spec: the monitor outline with the selection filled.
 
 import GObject from 'gi://GObject';

@@ -1,3 +1,7 @@
+// Generated with AI for personal use.
+// Do NOT upload to extensions.gnome.org (EGO) unless you understand JavaScript
+// and can maintain this code.
+
 // Searchable list of installed desktop applications.
 // Gtk.AppChooserWidget is deprecated since GTK 4.10, hence this replacement.
 

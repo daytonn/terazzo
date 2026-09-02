@@ -1,3 +1,7 @@
+// Generated with AI for personal use.
+// Do NOT upload to extensions.gnome.org (EGO) unless you understand JavaScript
+// and can maintain this code.
+
 import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
@@ -20,12 +24,12 @@ export default class TerazzoExtension extends Extension {
     }
 
     disable() {
-        for (const name of this._boundKeys ?? [])
+        for (const name of this._boundKeys)
             Main.wm.removeKeybinding(name);
         this._boundKeys = [];
-        this._engine?.disable();
+        this._engine.disable();
         this._engine = null;
-        this._presets?.destroy();
+        this._presets.destroy();
         this._presets = null;
         this._settings = null;
     }

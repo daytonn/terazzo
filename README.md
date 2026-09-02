@@ -128,6 +128,27 @@ packaging/PKGBUILD  Arch package built from a tagged release
 - Dialogs, transient windows, fullscreen windows, and windows that cannot be
   resized are left alone.
 
+## Provenance
+
+This extension was written with AI assistance, so every shipped source file
+carries the notice the GNOME reviewers ask for:
+
+```js
+// Generated with AI for personal use.
+// Do NOT upload to extensions.gnome.org (EGO) unless you understand JavaScript
+// and can maintain this code.
+```
+
+The code follows the [EGO review guidelines][review] and the
+[best practices reference][best-practices], but publishing on
+extensions.gnome.org is an agreement to maintain the extension for other
+people. Do not submit it there until you have read the code, can explain it,
+and are willing to maintain it — and remove the notices by hand when you do,
+since leaving them in signals to reviewers that the code was never read.
+
+[review]: https://gjs.guide/extensions/review-guidelines/review-guidelines.html
+[best-practices]: https://gjs.guide/extensions/review-guidelines/best-practices.html
+
 ## License
 
 GPL-2.0-or-later. See [LICENSE](LICENSE).

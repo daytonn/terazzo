@@ -1,3 +1,7 @@
+// Generated with AI for personal use.
+// Do NOT upload to extensions.gnome.org (EGO) unless you understand JavaScript
+// and can maintain this code.
+
 // GTK4 and libadwaita have no shortcut-capture widget, so this is hand-built:
 // a button showing the current accelerator that opens a capture dialog.
 

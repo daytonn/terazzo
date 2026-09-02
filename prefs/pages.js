@@ -1,3 +1,7 @@
+// Generated with AI for personal use.
+// Do NOT upload to extensions.gnome.org (EGO) unless you understand JavaScript
+// and can maintain this code.
+
 // Builders for the three preference pages. They take a Gio.Settings so they can
 // be exercised outside the shell with an in-memory backend.
 
@@ -262,7 +266,7 @@ export function buildRulesPage(settings, window) {
             return;
         const {rules: parsed, error} = parseRules(json);
         rules = parsed;
-        if (error && window)
+        if (error)
             window.add_toast(new Adw.Toast({title: `Rules: ${error}`}));
         rebuild();
     };
@@ -274,7 +278,7 @@ export function buildRulesPage(settings, window) {
             write();
             rebuild();
         });
-        dialog.present(window ?? page.get_root());
+        dialog.present(window);
     });
 
     settings.connect('changed::rules', load);
@@ -316,7 +320,7 @@ export function buildGeneralPage(settings, window) {
     importRow.add_suffix(importButton);
     gtile.add(importRow);
 
-    const toast = title => window?.add_toast(new Adw.Toast({title}));
+    const toast = title => window.add_toast(new Adw.Toast({title}));
     const runImport = () => {
         const r = importFromGtile(settings);
         toast(r.found ? `Imported ${r.specs} presets and ${r.keys} shortcuts` : 'gTile is not installed');
@@ -337,7 +341,7 @@ export function buildGeneralPage(settings, window) {
             if (id === 'import')
                 runImport();
         });
-        dialog.present(window ?? page.get_root());
+        dialog.present(window);
     });
 
     return page;
