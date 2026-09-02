@@ -1,0 +1,9 @@
+{
+  "uuid": "terazzo@daytonnolan.com",
+  "name": "Terazzo",
+  "description": "Per-app window placement with gTile-style preset hotkeys",
+  "settings-schema": "org.gnome.shell.extensions.terazzo",
+  "shell-version": ["50"],
+  "url": "https://github.com/daytonn/terazzo",
+  "version": 1
+}

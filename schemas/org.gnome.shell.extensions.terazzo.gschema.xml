@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="terazzo">
+  <schema id="org.gnome.shell.extensions.terazzo" path="/org/gnome/shell/extensions/terazzo/">
+    <key name="preset-spec-1" type="s">
+      <default>'2x1 1:1 1:1'</default>
+      <summary>Grid spec for preset slot 1</summary>
+    </key>
+    <key name="preset-key-1" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 1</summary>
+    </key>
+    <key name="preset-spec-2" type="s">
+      <default>'2x1 2:1 2:1'</default>
+      <summary>Grid spec for preset slot 2</summary>
+    </key>
+    <key name="preset-key-2" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 2</summary>
+    </key>
+    <key name="preset-spec-3" type="s">
+      <default>'3x1 1:1 1:1'</default>
+      <summary>Grid spec for preset slot 3</summary>
+    </key>
+    <key name="preset-key-3" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 3</summary>
+    </key>
+    <key name="preset-spec-4" type="s">
+      <default>'3x1 2:1 2:1'</default>
+      <summary>Grid spec for preset slot 4</summary>
+    </key>
+    <key name="preset-key-4" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 4</summary>
+    </key>
+    <key name="preset-spec-5" type="s">
+      <default>'3x1 3:1 3:1'</default>
+      <summary>Grid spec for preset slot 5</summary>
+    </key>
+    <key name="preset-key-5" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 5</summary>
+    </key>
+    <key name="preset-spec-6" type="s">
+      <default>'4x1 1:1 1:1'</default>
+      <summary>Grid spec for preset slot 6</summary>
+    </key>
+    <key name="preset-key-6" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 6</summary>
+    </key>
+    <key name="preset-spec-7" type="s">
+      <default>'4x1 2:1 2:1'</default>
+      <summary>Grid spec for preset slot 7</summary>
+    </key>
+    <key name="preset-key-7" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 7</summary>
+    </key>
+    <key name="preset-spec-8" type="s">
+      <default>'4x1 3:1 3:1'</default>
+      <summary>Grid spec for preset slot 8</summary>
+    </key>
+    <key name="preset-key-8" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 8</summary>
+    </key>
+    <key name="preset-spec-9" type="s">
+      <default>'4x1 4:1 4:1'</default>
+      <summary>Grid spec for preset slot 9</summary>
+    </key>
+    <key name="preset-key-9" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 9</summary>
+    </key>
+    <key name="preset-spec-10" type="s">
+      <default>'8x1 3:1 6:1'</default>
+      <summary>Grid spec for preset slot 10</summary>
+    </key>
+    <key name="preset-key-10" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 10</summary>
+    </key>
+    <key name="preset-spec-11" type="s">
+      <default>'1x1 1:1 1:1'</default>
+      <summary>Grid spec for preset slot 11</summary>
+    </key>
+    <key name="preset-key-11" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 11</summary>
+    </key>
+    <key name="preset-spec-12" type="s">
+      <default>'6x1 1:1 4:1'</default>
+      <summary>Grid spec for preset slot 12</summary>
+    </key>
+    <key name="preset-key-12" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 12</summary>
+    </key>
+    <key name="preset-spec-13" type="s">
+      <default>'6x1 3:1 6:1'</default>
+      <summary>Grid spec for preset slot 13</summary>
+    </key>
+    <key name="preset-key-13" type="as">
+      <default>[]</default>
+      <summary>Keybinding for preset slot 13</summary>
+    </key>
+    <key name="reset-layout-key" type="as">
+      <default>[]</default>
+      <summary>Re-apply placement rules to every open window</summary>
+    </key>
+    <key name="rules" type="s">
+      <default>'[]'</default>
+      <summary>JSON array of placement rules</summary>
+    </key>
+    <key name="fallback-preset" type="i">
+      <default>4</default>
+      <range min="0" max="13"/>
+      <summary>Preset slot applied to windows with no rule; 0 disables</summary>
+    </key>
+    <key name="gtile-imported" type="b">
+      <default>false</default>
+      <summary>Whether gTile presets were imported once</summary>
+    </key>
+  </schema>
+</schemalist>
