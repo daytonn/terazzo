@@ -24,4 +24,6 @@ package() {
   # Self-contained: the shell reads the schema from the extension directory,
   # so no glib-compile-schemas pacman hook is needed.
   glib-compile-schemas "$dest/schemas"
+
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
