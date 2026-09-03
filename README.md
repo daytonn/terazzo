@@ -16,14 +16,6 @@ way but do not want a tiling window manager deciding for them.
 - **Reset layout.** One shortcut re-applies every rule to the windows that are
   open now.
 
-Design notes live in `docs/plans/`.
-
-The thirteen presets ship as schema defaults — halves, thirds, quarters, a
-centred half, left and right two-thirds, and full screen — each bound to
-<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> through <kbd>0</kbd>, with the last
-three on the numeric keypad. A fresh install is usable immediately; edit any
-preset or shortcut on the Presets page. Reset layout is unbound by default.
-
 ## Requirements
 
 GNOME Shell 50 on Wayland or X11. `gjs`, `glib-compile-schemas`, and `make` for
