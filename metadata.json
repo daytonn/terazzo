@@ -4,7 +4,8 @@
   "description": "Per-app window placement with grid preset hotkeys",
   "settings-schema": "org.gnome.shell.extensions.terazzo",
   "shell-version": [
-    "50"
+    "50",
+    "51"
   ],
   "url": "https://github.com/daytonn/terazzo"
 }

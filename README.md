@@ -18,8 +18,12 @@ way but do not want a tiling window manager deciding for them.
 
 ## Requirements
 
-GNOME Shell 50 on Wayland or X11. `gjs`, `glib-compile-schemas`, and `make` for
+GNOME Shell 50 or 51 on Wayland or X11. `gjs`, `glib-compile-schemas`, and `make` for
 development. `node` for the optional syntax check.
+
+After a GNOME upgrade, run `make link` or `make install` again: both add the
+running Shell's major version to `metadata.json` when it is missing, so the
+extension is no longer reported as out of date.
 
 ## Install on another machine
 
@@ -92,6 +96,7 @@ prefs/presetPreview.js  small drawing of a grid spec, used as the visual cue
                         in the preset and rule choosers
 schemas/            GSettings schema (compile with make schemas)
 test/               gjs test harness and tests
+tools/shell-version.js  adds the running Shell version to metadata.json
 packaging/PKGBUILD  Arch package built from a tagged release
 ```
 

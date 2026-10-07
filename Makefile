@@ -3,10 +3,14 @@ SCHEMA := schemas/org.gnome.shell.extensions.terazzo.gschema.xml
 EXT_DIR := $(HOME)/.local/share/gnome-shell/extensions/$(UUID)
 BUNDLE := dist/$(UUID).shell-extension.zip
 
-.PHONY: schemas test smoke preview check pack link install uninstall
+.PHONY: schemas shell-version test smoke preview check pack link install uninstall
 
 schemas:
 	glib-compile-schemas schemas/
+
+# Add the running GNOME Shell's major version to metadata.json if it is missing.
+shell-version:
+	@gjs -m tools/shell-version.js
 
 test: schemas
 	gjs -m test/run.js
@@ -19,12 +23,12 @@ preview: schemas
 	GSETTINGS_BACKEND=memory gjs -m test/prefs-preview.js
 
 check:
-	@for f in extension.js prefs.js lib/*.js prefs/*.js; do cp $$f /tmp/terazzo-check.mjs && node --check /tmp/terazzo-check.mjs || { echo "syntax error in $$f"; exit 1; }; done
+	@for f in extension.js prefs.js lib/*.js prefs/*.js tools/*.js; do cp $$f /tmp/terazzo-check.mjs && node --check /tmp/terazzo-check.mjs || { echo "syntax error in $$f"; exit 1; }; done
 	@rm -f /tmp/terazzo-check.mjs
 	@echo "syntax ok"
 
 # Distributable bundle for `gnome-extensions install`.
-pack: schemas
+pack: schemas shell-version
 	@mkdir -p dist
 	gnome-extensions pack . \
 	  --extra-source=lib --extra-source=prefs --extra-source=LICENSE \
@@ -41,7 +45,7 @@ define unlink_ext
 endef
 
 # Development: point the extensions directory at this working tree.
-link: schemas
+link: schemas shell-version
 	@mkdir -p $(dir $(EXT_DIR))
 	$(call unlink_ext)
 	ln -s $(CURDIR) $(EXT_DIR)
